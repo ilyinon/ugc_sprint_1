@@ -1,0 +1,4 @@
+services:
+  ugs:
+    ports: !override
+      - "8010:8000"
