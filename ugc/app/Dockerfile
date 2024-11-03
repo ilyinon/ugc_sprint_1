@@ -7,7 +7,8 @@ ENV PYTHONPATH '/opt/app'
 
 WORKDIR /opt/app
 COPY requirements.txt /opt/app/requirements.txt
-RUN  pip install --upgrade pip \
+RUN apt-get update && apt-get install -y git curl
+RUN  pip install --upgrade pip\
      && pip install --no-cache-dir -r /opt/app/requirements.txt
 
 COPY . /opt/app

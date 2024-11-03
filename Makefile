@@ -22,7 +22,8 @@ ugc_dir:
 	@:
 
 kafka: kafka_dir
-	docker-compose -f docker-compose.yml -f kafka/docker-compose.yml up -d --build
+	docker-compose -f docker-compose.yml -f docker-compose.override.yml \
+	-f kafka/docker-compose.yml up -d --build
 
 kafka_dir:
 	@:
