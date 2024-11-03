@@ -1,5 +1,4 @@
 from datetime import datetime
-from uuid import UUID
 
 import orjson
 from pydantic import UUID4, BaseModel, Field
@@ -54,7 +53,3 @@ class UserPageClick(OrjsonBaseModel):
     page_name: str
     element_id: int
     element_type: str
-    referrer: str = None
-    device: str = None
-    browser: str = None
-    location: str = None
