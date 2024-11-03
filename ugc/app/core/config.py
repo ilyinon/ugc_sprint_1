@@ -24,9 +24,13 @@ class UgcSettings(BaseSettings):
 
 
     kafka_bootsrap: str = "kafka-0:9092,kafka-1:9092,kafka-2:9092"
-    kafka_topics: list = ["track_events", "quality_change", "video_completed", "search_filter"]
+    kafka_topics: list = ["track_events", 
+                          "quality_change", 
+                          "video_completed", 
+                          "search_filter",
+                          "page_time_spend",
+                          "user_page_click"]
 
-    pg_echo: bool = False
 
     log_level: bool = False
 
