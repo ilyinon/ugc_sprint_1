@@ -26,14 +26,12 @@ producer = KafkaProducer(
 
 router = APIRouter()
 
-
 async def verify_jwt(credentials: HTTPAuthorizationCredentials = Security(security)):
-    logger.info("Got token")
     try:
         payload = jwt.decode(
             credentials.credentials, 
             ugc_settings.authjwt_secret_key, 
-            algorithms=[ugc_settings.authjwt_secret_key]
+            algorithms=[ugc_settings.authjwt_algorithm]
         )
         return payload
     except jwt.exceptions.DecodeError:
@@ -45,21 +43,24 @@ async def verify_jwt(credentials: HTTPAuthorizationCredentials = Security(securi
 @router.post("/track_event", response_model=None, summary="Track events")
 async def track_event(
     event: QualityChangeEvent | VideoCompletedEvent | SearchFilterEvent,
-    # payload: dict = Depends(verify_jwt),
+    payload: dict = Depends(verify_jwt),
 ):
     """
     Get events from users.
     """
+    logger.info(f"event: {event}")
+    logger.info(f"payload: {payload["user_id"]}")
     if event.event_type in ugc_settings.kafka_topics:
         kafka_topic = event.event_type
     else:
         logger.error(f"Wrong kafka topic {event.event_type}")
         raise HTTPException(status_code=500, detail=f"Error tracking event")
     try:
-        # event_to_save = event["email"] = payload["email"]
-        # Send events to Kafka
         event_to_save = event
-        producer.send(kafka_topic, event_to_save.dict())
+        event_to_save.user_id = payload["user_id"]
+
+        logger.info(f"event: {event_to_save}")
+        producer.send(kafka_topic, event_to_save.model_dump(mode="json"))
         producer.flush()
 
     except Exception as e:

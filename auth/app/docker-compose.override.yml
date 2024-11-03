@@ -1,4 +1,0 @@
-services:
-  auth:
-    ports: !override
-      - "8000:8000"

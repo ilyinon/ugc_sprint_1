@@ -1,5 +1,8 @@
 import orjson
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, UUID4
+from uuid import UUID
+from datetime import datetime
+
 
 
 def orjson_dumps(v, *, default):
@@ -14,22 +17,22 @@ class OrjsonBaseModel(BaseModel):
 
 class QualityChangeEvent(OrjsonBaseModel):
     event_type: str = "quality_change"
-    user_id: int
-    video_id: int
+    user_id: UUID4 = Field(default=None)
+    video_id: UUID4
     old_quality: str
     new_quality: str
-    timestamp: str
+    timestamp: datetime
 
 
 class VideoCompletedEvent(OrjsonBaseModel):
     event_type: str = "video_completed"
-    user_id: int
-    video_id: int
-    timestamp: str
+    user_id: UUID4 = Field(default=None)
+    video_id: UUID4
+    timestamp: datetime
 
 
 class SearchFilterEvent(OrjsonBaseModel):
     event_type: str = "search_filter"
-    user_id: int
+    user_id: UUID4 = Field(default=None)
     filters: dict  # Словарь с фильтрами, например {"genre": "action", "rating": "9"}
-    timestamp: str
+    timestamp: datetime
