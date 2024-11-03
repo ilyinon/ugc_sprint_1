@@ -1,7 +1,7 @@
+from api.v1 import track_event
 from core.config import ugc_settings
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
-from api.v1 import track_event
 
 app = FastAPI(
     title=ugc_settings.project_name,

@@ -8,13 +8,8 @@ from fastapi import APIRouter, Depends, HTTPException, Security
 from fastapi.exceptions import HTTPException
 from fastapi.responses import ORJSONResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from schemas.base import (
-    QualityChangeEvent,
-    SearchFilterEvent,
-    VideoCompletedEvent,
-    PageTimeSpend,
-    UserPageClick,
-)
+from schemas.base import (PageTimeSpend, QualityChangeEvent, SearchFilterEvent,
+                          UserPageClick, VideoCompletedEvent)
 
 from kafka import KafkaProducer
 
