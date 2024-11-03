@@ -8,7 +8,13 @@ from fastapi import APIRouter, Depends, HTTPException, Security
 from fastapi.exceptions import HTTPException
 from fastapi.responses import ORJSONResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from schemas.base import QualityChangeEvent, SearchFilterEvent, VideoCompletedEvent, PageTimeSpend, UserPageClick
+from schemas.base import (
+    QualityChangeEvent,
+    SearchFilterEvent,
+    VideoCompletedEvent,
+    PageTimeSpend,
+    UserPageClick,
+)
 
 from kafka import KafkaProducer
 
@@ -26,12 +32,13 @@ producer = KafkaProducer(
 
 router = APIRouter()
 
+
 async def verify_jwt(credentials: HTTPAuthorizationCredentials = Security(security)):
     try:
         payload = jwt.decode(
-            credentials.credentials, 
-            ugc_settings.authjwt_secret_key, 
-            algorithms=[ugc_settings.authjwt_algorithm]
+            credentials.credentials,
+            ugc_settings.authjwt_secret_key,
+            algorithms=[ugc_settings.authjwt_algorithm],
         )
         return payload
     except jwt.exceptions.DecodeError:
@@ -42,7 +49,13 @@ async def verify_jwt(credentials: HTTPAuthorizationCredentials = Security(securi
 
 @router.post("/track_event", response_model=None, summary="Track events")
 async def track_event(
-    event: QualityChangeEvent | VideoCompletedEvent | SearchFilterEvent | PageTimeSpend | UserPageClick,
+    event: (
+        QualityChangeEvent
+        | VideoCompletedEvent
+        | SearchFilterEvent
+        | PageTimeSpend
+        | UserPageClick
+    ),
     payload: dict = Depends(verify_jwt),
 ):
     """

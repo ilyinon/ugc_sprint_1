@@ -11,8 +11,8 @@ app = FastAPI(
 )
 
 
-
 app.include_router(track_event.router, prefix="/api/v1")
+
 
 @app.get("/")
 async def root():

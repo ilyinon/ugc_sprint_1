@@ -9,14 +9,13 @@ from core.logger import logger
 user_data = {
     "user_id": "3fa85f64-0000-1111-2222-2c963f66afa6",
     "email": "user@ma.il",
-    "roles": "user"
+    "roles": "user",
 }
+
 
 def create_token(user_data):
 
-    expires_time = datetime.now(tz=timezone.utc) + timedelta(
-        seconds=86400
-    )
+    expires_time = datetime.now(tz=timezone.utc) + timedelta(seconds=86400)
     payload = {}
 
     payload["user_id"] = user_data["user_id"]
@@ -34,5 +33,5 @@ def create_token(user_data):
     return token
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     print(create_token(user_data))

@@ -4,7 +4,6 @@ from uuid import UUID
 from datetime import datetime
 
 
-
 def orjson_dumps(v, *, default):
     return orjson.dumps(v, default=default).decode()
 
@@ -37,12 +36,14 @@ class SearchFilterEvent(OrjsonBaseModel):
     filters: dict  # Словарь с фильтрами, например {"genre": "action", "rating": "9"}
     timestamp: datetime
 
+
 class PageTimeSpend(OrjsonBaseModel):
     event_type: str = "page_time_spend"
     user_id: UUID4 = Field(default=None)
     page_name: str
     entry_time: datetime
     exit_time: datetime = Field(default=None)
+
 
 class UserPageClick(OrjsonBaseModel):
     event_type: str = "user_page_click"
