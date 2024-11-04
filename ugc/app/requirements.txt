@@ -11,3 +11,5 @@ requests==2.32.3
 PyJWT==2.9.0
 kafka-python @ git+https://github.com/dpkp/kafka-python.git ; python_version >= '3.12'
 email_validator==2.2.0
+faker==30.8.2
+aiokafka==0.12.0
