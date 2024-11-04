@@ -92,7 +92,7 @@ def generate_and_send_data(num_batches, batch_size=BATCH_SIZE):
         send_data_to_kafka(batch)
 
 if __name__ == "__main__":
-    num_batches_to_send = 1000
+    num_batches_to_send = 10000
     generate_and_send_data(num_batches=num_batches_to_send)
 
 
