@@ -1,11 +1,13 @@
 import json
 
 import jwt
-from core.config import ugc_settings
-from core.logger import logger
 from fastapi import APIRouter, Depends, Security
 from fastapi.exceptions import HTTPException
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+
+from core.config import ugc_settings
+from core.logger import logger
+from kafka import KafkaProducer
 from schemas.base import (
     PageTimeSpend,
     QualityChangeEvent,
@@ -13,8 +15,6 @@ from schemas.base import (
     UserPageClick,
     VideoCompletedEvent,
 )
-
-from kafka import KafkaProducer
 
 security = HTTPBearer()
 

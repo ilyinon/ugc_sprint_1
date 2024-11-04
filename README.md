@@ -30,7 +30,7 @@ pre-commit install
 
 
 
-## Требования 
+## Требования
 
 <details>
 
@@ -70,4 +70,3 @@ pre-commit install
 
 
 </details>
-
