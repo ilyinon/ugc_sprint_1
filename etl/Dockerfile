@@ -13,4 +13,4 @@ RUN  pip install --upgrade pip\
 
 COPY app/ /opt/app
 
-CMD ["bash", "/opt/app/run_etl.sh"]
+CMD ["bash", "run_etl.sh"]

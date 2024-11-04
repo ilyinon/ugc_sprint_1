@@ -1,6 +1,6 @@
-CREATE DATABASE IF NOT EXISTS actions_users;
+CREATE DATABASE IF NOT EXISTS user_actions;
 
-USE actions_users;
+USE user_actions;
 
 CREATE TABLE IF NOT EXISTS quality_change (
     event_type String,
