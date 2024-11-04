@@ -2,6 +2,7 @@ from datetime import datetime, timedelta, timezone
 from uuid import UUID, uuid4
 
 import jwt as jwt_auth
+
 from core.config import ugc_settings
 from core.logger import logger
 

@@ -1,8 +1,9 @@
 import os
 from logging import config as logging_config
 
-from core.logger import LOGGING
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+from core.logger import LOGGING
 
 DOTENV = os.path.abspath(os.path.join(os.path.dirname(__file__), "../..", ".env"))
 

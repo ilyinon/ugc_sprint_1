@@ -4,7 +4,7 @@
 :Пользователь:  --> (Load Balancers)
 
 node "Load Balancers" {
-  [Nginx1..N] 
+  [Nginx1..N]
 
 }
 
