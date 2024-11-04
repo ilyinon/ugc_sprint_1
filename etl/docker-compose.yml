@@ -1,0 +1,13 @@
+services:
+
+  etl:
+    build: etl
+    env_file:
+      - ./.env
+    restart: unless-stopped
+    # healthcheck:
+    #   test: bash ps -ef |grep main # TODO
+    #   interval: 5s
+    #   timeout: 3s
+    #   retries: 20
+    ports: []

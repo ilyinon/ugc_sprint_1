@@ -1,0 +1,1 @@
+Сравнение Clickhouse vs Vertica
