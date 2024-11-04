@@ -1,3 +1,0 @@
-requests==2.32.3
-kafka-python @ git+https://github.com/dpkp/kafka-python.git ; python_version >= '3.12'
-backoff==2.2.1
