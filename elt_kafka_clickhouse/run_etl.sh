@@ -1,4 +1,4 @@
-echo "Запуск run_etl_elactic.sh script..."
+echo "Запуск run_etl.sh script..."
 set -e
 
 while ! nc -z $ELASTIC_HOST $ELASTIC_PORT; do
@@ -7,9 +7,6 @@ while ! nc -z $ELASTIC_HOST $ELASTIC_PORT; do
       sleep 10
 done
 
-
-echo "Запуск run_etl_elactic.sh script..."
-set -e
 
 while ! nc -z $ELASTIC_HOST $ELASTIC_PORT; do
       echo "No connect elastic..." $ELASTIC_HOST $ELASTIC_PORT
