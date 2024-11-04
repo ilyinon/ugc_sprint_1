@@ -1,0 +1,61 @@
+
+
+@startuml
+:Пользователь:  --> [Nginx 1..N]
+
+[Nginx 1..N]
+[Search]
+[Auth]
+[Adminka]
+[UGC]
+
+
+
+
+[Nginx 1..N] --> [Search]
+[Nginx 1..N] --> [Auth]
+[Nginx 1..N] --> [Adminka]
+[Nginx 1..N] --> [UGC]
+[Search] --> [Auth]
+[Adminka] --> [Auth]
+
+
+
+
+
+database "Postgres" {
+  [Auth DB]
+  [Content DB]
+}
+
+database "Elastic" {
+  [Movies]
+  [Persons]
+  [Genres]
+  [Roles]
+}
+
+database "Redis" {
+  [caches]
+  [auth black jti]
+}
+
+database "Kafka" {
+  [topics for events]
+
+}
+
+database "Clickhouse" {
+  [tables to analyse]
+
+}
+
+
+[Adminka] --> [Content DB]
+[Search] --> [Elastic]
+[Search] --> [Redis]
+[Auth] --> [Auth DB]
+[Auth] --> [Redis]
+[UGC] --> [Kafka]
+[UGC] --> [Clickhouse]
+@enduml

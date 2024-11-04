@@ -1,24 +1,24 @@
 import json
-import os
 
 import jwt
 from core.config import ugc_settings
 from core.logger import logger
-from fastapi import APIRouter, Depends, HTTPException, Security
+from fastapi import APIRouter, Depends, Security
 from fastapi.exceptions import HTTPException
-from fastapi.responses import ORJSONResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from schemas.base import (PageTimeSpend, QualityChangeEvent, SearchFilterEvent,
-                          UserPageClick, VideoCompletedEvent)
+from schemas.base import (
+    PageTimeSpend,
+    QualityChangeEvent,
+    SearchFilterEvent,
+    UserPageClick,
+    VideoCompletedEvent,
+)
 
 from kafka import KafkaProducer
 
 security = HTTPBearer()
 
-# Настройки Kafka (можно вынести в .env файл)
 
-
-# Создаем Kafka producer
 producer = KafkaProducer(
     bootstrap_servers=ugc_settings.kafka_bootsrap,
     value_serializer=lambda v: json.dumps(v).encode("utf-8"),
@@ -29,6 +29,9 @@ router = APIRouter()
 
 
 async def verify_jwt(credentials: HTTPAuthorizationCredentials = Security(security)):
+    """
+    Verify user's token and get its payload.
+    """
     try:
         payload = jwt.decode(
             credentials.credentials,
@@ -56,21 +59,21 @@ async def track_event(
     """
     Get events from users.
     """
-    logger.info(f"event: {event}")
-    logger.info(f"payload: {payload["user_id"]}")
+    logger.debug("event: %s", event)
+    logger.debug("payload: %s", payload["user_id"])
     if event.event_type in ugc_settings.kafka_topics:
         kafka_topic = event.event_type
     else:
         logger.error(f"Wrong kafka topic {event.event_type}")
-        raise HTTPException(status_code=500, detail=f"Error tracking event")
+        raise HTTPException(status_code=500, detail="Error tracking event")
     try:
         event_to_save = event
         event_to_save.user_id = payload["user_id"]
 
-        logger.info(f"event: {event_to_save}")
+        logger.debug(f"event: {event_to_save}")
         producer.send(kafka_topic, event_to_save.model_dump(mode="json"))
         producer.flush()
 
     except Exception as e:
-        logger.error(f"Event didn't track successfully")
+        logger.error("Event didn't track successfully")
         raise HTTPException(status_code=500, detail=f"Error tracking event: {str(e)}")
