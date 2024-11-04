@@ -1,6 +1,8 @@
-
-
 @startuml
+!theme spacelab
+!define GREEN #A8D5BA
+skinparam backgroundColor white
+
 :Пользователь:  --> [Nginx 1..N]
 
 [Nginx 1..N]
@@ -18,6 +20,7 @@
 [Nginx 1..N] --> [UGC]
 [Search] --> [Auth]
 [Adminka] --> [Auth]
+[Adminka] --> [Search]
 
 
 
