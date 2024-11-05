@@ -42,9 +42,9 @@ def insert_data_to_clickhouse(name_table, data: list):
         if isinstance(item, PageTimeSpend):
             serialized_item = {
                 'event_type': item.event_type,
-                'user_id': item.user_id,  # Convert UUID to string
+                'user_id': item.user_id,
                 'page_name': item.page_name,
-                'entry_time': item.entry_time,  # Convert to ISO format string
+                'entry_time': item.entry_time,
                 'exit_time': item.exit_time
             }
             data_to_insert.append(serialized_item)
