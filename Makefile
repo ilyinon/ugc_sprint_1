@@ -24,6 +24,9 @@ clickhouse: clickhouse_dir
 clickhouse_dir:
 	@:
 
+vertica:
+	docker run -d -p 5433:5433 jbfavre/vertica:latest
+
 
 all:
 	$(MAKE) infra
