@@ -1,21 +1,15 @@
 import json
-
-import clickhouse_connect
-from pydantic import ValidationError, BaseModel
 from multiprocessing import Process
 
-from config import etl_settings, KafkaTopics
-from logger import logger
 import backoff
+import clickhouse_connect
+from config import KafkaTopics, etl_settings
+from logger import logger
+from pydantic import BaseModel, ValidationError
+from schemas.base import (PageTimeSpend, QualityChangeEvent, SearchFilterEvent,
+                          UserPageClick, VideoCompletedEvent)
 
 from kafka import KafkaConsumer
-from schemas.base import (
-    PageTimeSpend,
-    QualityChangeEvent,
-    SearchFilterEvent,
-    UserPageClick,
-    VideoCompletedEvent,
-)
 
 logger.info(f"kafka_bootstrap: {etl_settings.kafka_bootsrap}")
 
