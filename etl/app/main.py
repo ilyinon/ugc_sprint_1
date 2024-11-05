@@ -22,8 +22,8 @@ CLICKHOUSE_DATABASE = etl_settings.ch_database
 CLICKHOUSE_USER = etl_settings.ch_user
 CLICKHOUSE_PASSWORD = etl_settings.ch_password
 
-poll_timeout = 1000  # in milliseconds
-batch_size = 10
+poll_timeout = 10000  # in milliseconds
+batch_size = 1
 
 
 clickhouse_client = clickhouse_connect.get_client(
