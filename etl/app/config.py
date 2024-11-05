@@ -15,7 +15,7 @@ class KafkaTopics(Enum):
     VIDEO_COMPLETED = "video_completed"
     SEARCH_FILTER = "search_filter"
     PAGE_TIME_SPEND = "page_time_spend"
-    USER_PAGE_CLICK = "user_page_click"
+    USER_PAGE_CLICK = "user_interaction"
 
 
 class EtlSettings(BaseSettings):

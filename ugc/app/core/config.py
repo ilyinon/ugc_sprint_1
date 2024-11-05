@@ -3,7 +3,7 @@ from logging import config as logging_config
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from core.logger import LOGGING
+from ugc.app.core.logger import LOGGING
 
 DOTENV = os.path.abspath(os.path.join(os.path.dirname(__file__), "../..", ".env"))
 
@@ -15,14 +15,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 class UgcSettings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=DOTENV)
+    model_config = SettingsConfigDict(env_file=DOTENV, extra='ignore')
 
     project_name: str = "ugc"
 
     authjwt_secret_key: str
     authjwt_algorithm: str = "HS256"
 
-    kafka_bootsrap: str = "kafka-0:9092,kafka-1:9092,kafka-2:9092"
+    kafka_bootsrap: str = "localhost:9094,localhost:9095,localhost:9096"
     kafka_topics: list = [
         "track_events",
         "quality_change",
