@@ -39,15 +39,15 @@ def insert_data_to_clickhouse(name_table, data: list):
     # Prepare data for insertion
     data_to_insert = []
     for item in data:
-        # Ensure that each item is a dictionary
-        serialized_item = {
-            'event_type': item.get('event_type'),
-            'user_id': str(item.get('user_id')),  # Convert UUID to string
-            'page_name': item.get('page_name'),
-            'entry_time': item.get('entry_time'),  # Keep in ISO format string
-            'exit_time': item.get('exit_time'),  # Keep in ISO format string
-        }
-        data_to_insert.append(serialized_item)
+        if isinstance(item, PageTimeSpend):
+            serialized_item = {
+                'event_type': item.event_type,
+                'user_id': str(item.user_id),  # Convert UUID to string
+                'page_name': item.page_name,
+                'entry_time': item.entry_time.isoformat(),  # Convert to ISO format string
+                'exit_time': item.exit_time.isoformat() if item.exit_time else None,
+            }
+            data_to_insert.append(serialized_item)
 
     # Log data to insert
     logger.info(f"Inserting data: {data_to_insert}")
