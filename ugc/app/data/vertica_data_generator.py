@@ -4,17 +4,7 @@ from faker import Faker
 import vertica_python
 import time
 from functools import wraps
-
-def timer_decorator(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        start_time = time.time()
-        result = func(*args, **kwargs)
-        end_time = time.time()
-        execution_time = end_time - start_time
-        print(f"Execution time of {func.__name__}: {execution_time:.6f} seconds")
-        return result
-    return wrapper
+from multiprocessing import Pool
 
 fake = Faker()
 
@@ -28,6 +18,18 @@ conn_info = {
 }
 
 BATCH_SIZE = 1000
+NUM_WORKERS = 4
+
+def timer_decorator(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        execution_time = end_time - start_time
+        print(f"Execution time of {func.__name__}: {execution_time:.6f} seconds")
+        return result
+    return wrapper
 
 def generate_aggregated_data():
     event_date = datetime.now().date()
@@ -87,10 +89,10 @@ def insert_data_batch(batch_size=BATCH_SIZE):
         print(f"Inserted {batch_size} records into Vertica.")
 
 @timer_decorator
-def generate_and_insert_data(num_batches):
-    for _ in range(num_batches):
-        insert_data_batch()
+def parallel_generate_and_insert_data(total_batches):
+    with Pool(processes=NUM_WORKERS) as pool:
+        pool.map(insert_data_batch, [BATCH_SIZE] * total_batches)
 
 if __name__ == "__main__":
     num_batches = 10000
-    generate_and_insert_data(num_batches)
+    parallel_generate_and_insert_data(num_batches)
