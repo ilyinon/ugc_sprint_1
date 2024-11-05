@@ -2,7 +2,7 @@ import json
 
 import clickhouse_connect
 from pydantic import ValidationError, BaseModel
-from concurrent.futures import ThreadPoolExecutor
+from multiprocessing import Process
 
 from config import etl_settings, KafkaTopics
 from logger import logger
@@ -88,6 +88,11 @@ if __name__ == "__main__":
         KafkaTopics.VIDEO_COMPLETED.value: VideoCompletedEvent,
     }
 
-    with ThreadPoolExecutor(max_workers=len(topics)) as executor:
-        for topic, model in topics.items():
-            executor.submit(consume_messages, topic, model)
+    processes = []
+    for topic, model in topics.items():
+        process = Process(target=consume_messages, args=(topic, model))
+        processes.append(process)
+        process.start()
+
+    for process in processes:
+        process.join()
