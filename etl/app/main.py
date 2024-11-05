@@ -44,8 +44,8 @@ def insert_data_to_clickhouse(name_table, data: list):
                 'event_type': item.event_type,
                 'user_id': item.user_id,  # Convert UUID to string
                 'page_name': item.page_name,
-                'entry_time': item.entry_time.isoformat(),  # Convert to ISO format string
-                'exit_time': item.exit_time.isoformat() if item.exit_time else None,
+                'entry_time': item.entry_time,  # Convert to ISO format string
+                'exit_time': item.exit_time
             }
             data_to_insert.append(serialized_item)
 
