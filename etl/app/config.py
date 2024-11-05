@@ -24,7 +24,7 @@ class EtlSettings(BaseSettings):
     kafka_bootsrap: list = ["kafka-0:9092", "kafka-1:9092", "kafka-2:9092"]
     ch_host: str = "clickhouse"
     ch_port: int = 8123
-    ch_database: str = "user_actions"
+    ch_database: str = "actions_users"
     ch_user: str = "default"
     ch_password: str = ""
 
