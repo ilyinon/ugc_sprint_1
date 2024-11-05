@@ -1,0 +1,36 @@
+
+@startuml
+actor front_client
+
+
+
+participant UGC [
+    =UGC service
+    ----
+    ""/api/v1/track_event""
+]
+
+participant Kafka [
+    =Kafka
+    ----
+    ""topic track_events""
+]
+
+participant ETL [
+    =ETL
+    ----
+    ""transform data""
+]
+
+database Clickhouse
+
+actor Analytics
+
+front_client --> UGC: send events to UGS service
+UGC --> Kafka: verifiy jwt token and data, send to Kafka
+Kafka --> ETL: ETL consumes data from topics
+ETL --> Clickhouse: ETL sends data to click in chunks
+Analytics --> Clickhouse: have access to data somehow
+
+
+@enduml

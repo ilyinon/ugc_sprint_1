@@ -1,18 +1,28 @@
 infra:
-	docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d --build
+	docker-compose -f docker-compose.yml up -d --build
 
 ugc: ugc_dir
 	$(MAKE) infra
-	docker-compose -f docker-compose.yml -f docker-compose.override.yml \
-	-f ugc/app/docker-compose.yml -f ugc/app/docker-compose.override.yml \
+	docker-compose -f docker-compose.yml \
+	-f ugc/docker-compose.yml -f ugc/docker-compose.override.yml \
 	up -d --build
 	docker logs -f ugc_sprint_1-ugc-1
 
 ugc_dir:
 	@:
 
+etl: etl_dir
+	$(MAKE) infra
+	docker-compose -f docker-compose.yml \
+	-f etl/docker-compose.yml \
+	up -d --build
+	docker logs -f ugc_sprint_1-etl-1
+
+etl_dir:
+	@:
+
 kafka: kafka_dir
-	docker-compose -f docker-compose.yml -f docker-compose.override.yml \
+	docker-compose -f docker-compose.yml \
 	-f kafka/docker-compose.yml up -d --build
 
 kafka_dir:
@@ -30,17 +40,20 @@ vertica:
 
 all:
 	$(MAKE) infra
+	$(MAKE) kafka
+	$(MAKE) clickhouse
 	$(MAKE) ugc
-	$(MAKE) admin
+	$(MAKE) etl
 
-
-remove:
-	docker-compose -f docker-compose.yml stop db
-	docker-compose -f docker-compose.yml rm db -f
-	docker volume rm ugc_sprint_1_pg_data
 stop:
 	docker-compose -f docker-compose.yml \
-	-f ugc/app/docker-compose.yml down
+	-f ugc/docker-compose.yml \
+	-f etl/docker-compose.yml \
+	-f kafka/docker-compose.yml \
+	-f clickhouse/docker-compose.yml down
 
 status:
 	docker-compose ps
+
+lint:
+	pre-commit install

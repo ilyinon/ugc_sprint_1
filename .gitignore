@@ -3,4 +3,5 @@
 **/__pycache__/
 movies_admin/config/.env
 venv/
+env/
 *.py[cod]
