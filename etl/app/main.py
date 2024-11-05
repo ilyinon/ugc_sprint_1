@@ -1,5 +1,6 @@
 import json
 from multiprocessing import Process
+from datetime import datetime
 
 import backoff
 import clickhouse_connect
@@ -35,10 +36,30 @@ clickhouse_client = clickhouse_connect.get_client(
 
 
 def insert_data_to_clickhouse(name_table, data: list):
-    clickhouse_client.execute(
-        f"INSERT INTO {name_table} FORMAT JSONEachRow", data
-    )
-    logger.info(f"Inserted {len(data)} rows to clickhouse")
+    # Prepare data for insertion
+    data_to_insert = []
+    for item in data:
+        # Ensure that each item is a dictionary
+        serialized_item = {
+            'event_type': item.get('event_type'),
+            'user_id': str(item.get('user_id')),  # Convert UUID to string
+            'page_name': item.get('page_name'),
+            'entry_time': item.get('entry_time'),  # Keep in ISO format string
+            'exit_time': item.get('exit_time'),  # Keep in ISO format string
+        }
+        data_to_insert.append(serialized_item)
+
+    # Log data to insert
+    logger.info(f"Inserting data: {data_to_insert}")
+
+    if data_to_insert:
+        try:
+            clickhouse_client.insert(name_table, data_to_insert)
+            logger.info(f"Inserted {len(data_to_insert)} rows to ClickHouse")
+        except Exception as e:
+            logger.error(f"Failed to insert data into ClickHouse: {e}")
+    else:
+        logger.info("No data to insert.")
 
 
 @backoff.on_exception(
@@ -66,6 +87,12 @@ def consume_messages(topic: str, model: BaseModel):
             for message in msgs:
                 try:
                     validated_data = model(**message.value)
+
+                    if 'entry_time' in message:
+                        message['entry_time'] = datetime.fromisoformat(message['entry_time'])
+                    if 'exit_time' in message:
+                        message['exit_time'] = datetime.fromisoformat(message['exit_time'])
+
                     batch.append(validated_data)
                 except ValidationError as e:
                     logger.info(f"Validation error in topic {topic}: {e}")
@@ -76,10 +103,10 @@ def consume_messages(topic: str, model: BaseModel):
 if __name__ == "__main__":
     topics = {
         KafkaTopics.PAGE_TIME_SPEND.value: PageTimeSpend,
-        KafkaTopics.QUALITY_CHANGE.value: QualityChangeEvent,
-        KafkaTopics.SEARCH_FILTER.value: SearchFilterEvent,
-        KafkaTopics.USER_PAGE_CLICK.value: UserPageClick,
-        KafkaTopics.VIDEO_COMPLETED.value: VideoCompletedEvent,
+        # KafkaTopics.QUALITY_CHANGE.value: QualityChangeEvent,
+        # KafkaTopics.SEARCH_FILTER.value: SearchFilterEvent,
+        # KafkaTopics.USER_PAGE_CLICK.value: UserPageClick,
+        # KafkaTopics.VIDEO_COMPLETED.value: VideoCompletedEvent,
     }
 
     processes = []
