@@ -89,9 +89,9 @@ def consume_messages(topic: str, model: BaseModel):
                     validated_data = model(**message.value)
 
                     if 'entry_time' in message:
-                        message['entry_time'] = datetime.fromisoformat(message['entry_time'])
+                        validated_data['entry_time'] = datetime.fromisoformat(validated_data['entry_time'])
                     if 'exit_time' in message:
-                        message['exit_time'] = datetime.fromisoformat(message['exit_time'])
+                        validated_data['exit_time'] = datetime.fromisoformat(validated_data['exit_time'])
 
                     batch.append(validated_data)
                 except ValidationError as e:
