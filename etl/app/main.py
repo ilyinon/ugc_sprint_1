@@ -36,8 +36,6 @@ clickhouse_client = clickhouse_connect.get_client(
 
 
 def insert_data_to_clickhouse(name_table, data: list):
-    # Prepare data for insertion
-    # Log data to insert
     logger.info(f"Inserting data: {data}")
 
     if data:
@@ -91,10 +89,10 @@ def consume_messages(topic: str, model: BaseModel):
 if __name__ == "__main__":
     topics = {
         KafkaTopics.PAGE_TIME_SPEND.value: PageTimeSpend,
-        # KafkaTopics.QUALITY_CHANGE.value: QualityChangeEvent,
-        # KafkaTopics.SEARCH_FILTER.value: SearchFilterEvent,
-        # KafkaTopics.USER_PAGE_CLICK.value: UserPageClick,
-        # KafkaTopics.VIDEO_COMPLETED.value: VideoCompletedEvent,
+        KafkaTopics.QUALITY_CHANGE.value: QualityChangeEvent,
+        KafkaTopics.SEARCH_FILTER.value: SearchFilterEvent,
+        KafkaTopics.USER_PAGE_CLICK.value: UserPageClick,
+        KafkaTopics.VIDEO_COMPLETED.value: VideoCompletedEvent,
     }
 
     processes = []
