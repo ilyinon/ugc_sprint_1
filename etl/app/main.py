@@ -23,7 +23,7 @@ CLICKHOUSE_USER = etl_settings.ch_user
 CLICKHOUSE_PASSWORD = etl_settings.ch_password
 
 poll_timeout = 10000  # in milliseconds
-batch_size = 1
+batch_size = 10
 
 
 clickhouse_client = clickhouse_connect.get_client(
@@ -37,25 +37,13 @@ clickhouse_client = clickhouse_connect.get_client(
 
 def insert_data_to_clickhouse(name_table, data: list):
     # Prepare data for insertion
-    data_to_insert = []
-    for item in data:
-        if isinstance(item, PageTimeSpend):
-            serialized_item = [
-                item.event_type,
-                item.user_id,
-                item.page_name,
-                item.entry_time,
-                item.exit_time
-            ]
-            data_to_insert.append(serialized_item)
-
     # Log data to insert
-    logger.info(f"Inserting data: {data_to_insert}")
+    logger.info(f"Inserting data: {data}")
 
-    if data_to_insert:
+    if data:
         try:
-            clickhouse_client.insert(name_table, data_to_insert)
-            logger.info(f"Inserted {len(data_to_insert)} rows to ClickHouse")
+            clickhouse_client.insert(name_table, data)
+            logger.info(f"Inserted {len(data)} rows to ClickHouse")
         except Exception as e:
             logger.error(f"Failed to insert data into ClickHouse: {e}")
     else:
@@ -92,8 +80,8 @@ def consume_messages(topic: str, model: BaseModel):
                         validated_data['entry_time'] = datetime.fromisoformat(validated_data['entry_time'])
                     if 'exit_time' in message:
                         validated_data['exit_time'] = datetime.fromisoformat(validated_data['exit_time'])
-
-                    batch.append(validated_data)
+                    row_data = [getattr(validated_data, field) for field in validated_data.model_fields]
+                    batch.append(row_data)
                 except ValidationError as e:
                     logger.info(f"Validation error in topic {topic}: {e}")
             if batch:
