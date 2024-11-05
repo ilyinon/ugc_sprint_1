@@ -40,13 +40,13 @@ def insert_data_to_clickhouse(name_table, data: list):
     data_to_insert = []
     for item in data:
         if isinstance(item, PageTimeSpend):
-            serialized_item = {
-                'event_type': item.event_type,
-                'user_id': item.user_id,
-                'page_name': item.page_name,
-                'entry_time': item.entry_time,
-                'exit_time': item.exit_time
-            }
+            serialized_item = [
+                item.event_type,
+                item.user_id,
+                item.page_name,
+                item.entry_time,
+                item.exit_time
+            ]
             data_to_insert.append(serialized_item)
 
     # Log data to insert
