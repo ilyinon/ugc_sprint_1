@@ -22,7 +22,7 @@ CLICKHOUSE_USER = etl_settings.ch_user
 CLICKHOUSE_PASSWORD = etl_settings.ch_password
 
 poll_timeout = 1000  # in milliseconds
-batch_size = 1000
+batch_size = 10
 
 
 clickhouse_client = clickhouse_connect.get_client(
@@ -70,7 +70,7 @@ def consume_messages(topic: str, model: BaseModel):
                 except ValidationError as e:
                     logger.info(f"Validation error in topic {topic}: {e}")
             if batch:
-                insert_data_to_clickhouse(batch)
+                insert_data_to_clickhouse(topic, batch)
 
 
 if __name__ == "__main__":
