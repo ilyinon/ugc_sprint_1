@@ -1,17 +1,22 @@
 import json
-from multiprocessing import Process
-from datetime import datetime
 import time
+from datetime import datetime
+from multiprocessing import Process
 
 import backoff
 import clickhouse_connect
 from config import KafkaTopics, etl_settings
+from kafka import KafkaConsumer
 from logger import logger
 from pydantic import BaseModel, ValidationError
-from schemas.base import (PageTimeSpend, QualityChangeEvent, SearchFilterEvent,
-                          UserPageClick, VideoCompletedEvent)
 
-from kafka import KafkaConsumer
+from schemas.base import (
+    PageTimeSpend,
+    QualityChangeEvent,
+    SearchFilterEvent,
+    UserPageClick,
+    VideoCompletedEvent,
+)
 
 logger.info(f"kafka_bootstrap: {etl_settings.kafka_bootsrap}")
 
@@ -66,9 +71,7 @@ def consume_messages(topic: str, model: BaseModel):
     logger.info(f"Started consumer for topic: {topic}")
 
     while True:
-        messages = consumer.poll(
-            timeout_ms=poll_timeout, max_records=batch_size
-        )
+        messages = consumer.poll(timeout_ms=poll_timeout, max_records=batch_size)
 
         for tp, msgs in messages.items():
             batch = []
@@ -76,11 +79,18 @@ def consume_messages(topic: str, model: BaseModel):
                 try:
                     validated_data = model(**message.value)
 
-                    if 'entry_time' in message:
-                        validated_data['entry_time'] = datetime.fromisoformat(validated_data['entry_time'])
-                    if 'exit_time' in message:
-                        validated_data['exit_time'] = datetime.fromisoformat(validated_data['exit_time'])
-                    row_data = [getattr(validated_data, field) for field in validated_data.model_fields]
+                    if "entry_time" in message:
+                        validated_data["entry_time"] = datetime.fromisoformat(
+                            validated_data["entry_time"]
+                        )
+                    if "exit_time" in message:
+                        validated_data["exit_time"] = datetime.fromisoformat(
+                            validated_data["exit_time"]
+                        )
+                    row_data = [
+                        getattr(validated_data, field)
+                        for field in validated_data.model_fields
+                    ]
                     batch.append(row_data)
                 except ValidationError as e:
                     logger.error(f"Validation error in topic {topic}: {e}")
