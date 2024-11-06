@@ -10,5 +10,4 @@ done
 
 echo "Etl запущен."
 
-find .
 python main.py

@@ -1,10 +1,9 @@
+import argparse
 import json
 import random
 import time
-from datetime import datetime
 from enum import Enum
 from functools import wraps
-from multiprocessing import Pool
 from uuid import uuid4
 
 import requests
@@ -86,19 +85,23 @@ def generate_event_data(event_type):
 
 
 if __name__ == "__main__":
-    num_batches = 10000
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-token", help="Token to access UGC")
+    parser.add_argument("-amount", type=int, help="Amount entries to generate")
+
+    args = parser.parse_args()
+
+    count = args.amount
     url = "http://localhost:8010/api/v1/track_event"
     headers = {
         "accept": "application/json",
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNDM3MGE5NzgtMmQ5NS00N2VlLThkYTItZmRjMmQ4Y2QxYmI3IiwiZW1haWwiOiJ1c2VyQG1hLmlsIiwicm9sZXMiOiJ1c2VyIiwiZXhwIjoxNzMwOTM3NDU3LCJqdGkiOiJkYjVjMmI2Yy0yOGE3LTRkZTItYjU5Yy02NWJhMjljMWRhYTEifQ.L3k_AEP-T1ImwGMfylfre2OMoRBeqNGYLqneXG4rcWk",
+        "Authorization": f"Bearer {args.token}",
         "Content-Type": "application/json",
     }
 
-    # while num_batches > 0:
-    #     data = generate_event_data(KafkaTopics.QUALITY_CHANGE)
-    #     response = requests.post(url, headers=headers, data=json.dumps(data))
-    #     # print(response.status_code)
-    #     num_batches -= 1
+    while count > 0:
+        data = generate_event_data(KafkaTopics.QUALITY_CHANGE)
+        response = requests.post(url, headers=headers, data=json.dumps(data))
+        count -= 1
 
-    data = generate_event_data(KafkaTopics.QUALITY_CHANGE)
-    response = requests.post(url, headers=headers, data=json.dumps(data))
+    print(f"Overall {args.amount} requests have been sent to UGC")
