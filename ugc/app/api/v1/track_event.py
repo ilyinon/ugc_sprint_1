@@ -8,20 +8,19 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from core.config import ugc_settings
 from core.logger import logger
 from kafka import KafkaProducer
-from schemas.request import (
-    PageTimeSpend,
-    QualityChangeEvent,
-    SearchFilterEvent,
-    UserPageClick,
-    VideoCompletedEvent,
-)
-
 from schemas.kafka import (
     KafkaPageTimeSpend,
     KafkaQualityChangeEvent,
     KafkaSearchFilterEvent,
     KafkaUserPageClick,
     KafkaVideoCompletedEvent,
+)
+from schemas.request import (
+    PageTimeSpend,
+    QualityChangeEvent,
+    SearchFilterEvent,
+    UserPageClick,
+    VideoCompletedEvent,
 )
 
 security = HTTPBearer()
@@ -62,7 +61,6 @@ event_types = {
 }
 
 
-
 @router.post("/track_event", response_model=None, summary="Track events")
 async def track_event(
     event: (
@@ -85,14 +83,12 @@ async def track_event(
         logger.error(f"Wrong kafka topic {event.event_type}")
         raise HTTPException(status_code=500, detail="Error tracking event")
     try:
-        
+
         event_to_save = event.dict()
         event_to_save["user_id"] = payload["user_id"]
 
         event_type = event_to_save["event_type"]
         event_to_kafa = event_types.get(event_type, None)(**event_to_save)
-
-
 
         producer.send(kafka_topic, event_to_kafa.model_dump(mode="json"))
         producer.flush()

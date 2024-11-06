@@ -1,6 +1,7 @@
 import time
 from functools import wraps
 
+
 def timer_decorator(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
@@ -10,4 +11,5 @@ def timer_decorator(func):
         execution_time = end_time - start_time
         print(f"Execution time of {func.__name__}: {execution_time:.6f} seconds")
         return result
+
     return wrapper
