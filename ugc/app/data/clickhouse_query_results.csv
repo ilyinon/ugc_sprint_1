@@ -1,0 +1,11 @@
+Query Name,Execution Time (s),Result Rows,Status,Error
+Select All Data,,0,Failed,object of type 'QuerySummary' has no len()
+Filter by Event Type,,0,Failed,object of type 'QuerySummary' has no len()
+Date Range Query,,0,Failed,object of type 'QuerySummary' has no len()
+Count Events by Type,,0,Failed,object of type 'QuerySummary' has no len()
+Average Duration by Event Type,,0,Failed,object of type 'QuerySummary' has no len()
+Daily Event Count,,0,Failed,object of type 'QuerySummary' has no len()
+Hourly Aggregation by Event Type,,0,Failed,object of type 'QuerySummary' has no len()
+Most Frequent Page URLs,,0,Failed,object of type 'QuerySummary' has no len()
+Percentage Distribution of Event Types,,0,Failed,object of type 'QuerySummary' has no len()
+Rolling Average of Clicks Over Time,,0,Failed,object of type 'QuerySummary' has no len()
