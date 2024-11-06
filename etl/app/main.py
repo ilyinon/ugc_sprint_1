@@ -81,7 +81,7 @@ def consume_messages(topic: str, model: BaseModel):
                     row_data = [getattr(validated_data, field) for field in validated_data.model_fields]
                     batch.append(row_data)
                 except ValidationError as e:
-                    logger.info(f"Validation error in topic {topic}: {e}")
+                    logger.error(f"Validation error in topic {topic}: {e}")
             if batch:
                 insert_data_to_clickhouse(topic, batch)
 
