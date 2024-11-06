@@ -1,6 +1,7 @@
 import json
 from multiprocessing import Process
 from datetime import datetime
+import time
 
 import backoff
 import clickhouse_connect
@@ -24,6 +25,7 @@ CLICKHOUSE_PASSWORD = etl_settings.ch_password
 
 poll_timeout = 10000  # in milliseconds
 batch_size = 10
+TIME_SLEEP = 1
 
 
 clickhouse_client = clickhouse_connect.get_client(
@@ -84,6 +86,7 @@ def consume_messages(topic: str, model: BaseModel):
                     logger.error(f"Validation error in topic {topic}: {e}")
             if batch:
                 insert_data_to_clickhouse(topic, batch)
+                time.sleep(TIME_SLEEP)
 
 
 if __name__ == "__main__":
