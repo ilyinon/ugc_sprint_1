@@ -2,7 +2,8 @@ import os
 from logging import config as logging_config
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from ugc.app.core.logger import LOGGING
+
+from core.logger import LOGGING
 
 DOTENV = os.path.abspath(os.path.join(os.path.dirname(__file__), "../..", ".env"))
 
@@ -14,7 +15,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 class UgcSettings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=DOTENV, extra="ignore")
+    model_config = SettingsConfigDict(env_file=DOTENV)
 
     project_name: str = "ugc"
 

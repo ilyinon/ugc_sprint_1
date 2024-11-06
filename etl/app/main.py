@@ -30,7 +30,7 @@ CLICKHOUSE_PASSWORD = etl_settings.ch_password
 
 poll_timeout = 10000  # in milliseconds
 batch_size = 10
-TIME_SLEEP = 1
+TIME_SLEEP = 0.1
 
 
 clickhouse_client = clickhouse_connect.get_client(
