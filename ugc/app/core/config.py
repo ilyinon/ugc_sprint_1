@@ -21,7 +21,7 @@ class UgcSettings(BaseSettings):
     authjwt_secret_key: str
     authjwt_algorithm: str = "HS256"
 
-    kafka_bootsrap: str = "localhost:9094,localhost:9095,localhost:9096"
+    kafka_bootsrap: str = "kafka-0:9092,kafka-1:9092,kafka-2:9092"
     kafka_topics: list = [
         "track_events",
         "quality_change",
