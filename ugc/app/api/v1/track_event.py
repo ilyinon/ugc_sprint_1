@@ -4,10 +4,10 @@ import jwt
 from fastapi import APIRouter, Depends, Security
 from fastapi.exceptions import HTTPException
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from kafka import KafkaProducer
 
 from core.config import ugc_settings
 from core.logger import logger
-from kafka import KafkaProducer
 from schemas.base import (
     PageTimeSpend,
     QualityChangeEvent,
