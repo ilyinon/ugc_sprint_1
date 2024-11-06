@@ -46,6 +46,6 @@ CREATE TABLE IF NOT EXISTS user_interaction(
     timestamp DateTime NOT NULL,
     page_name String,
     element_id Int64,
-    elemeny_type String
+    element_type String
 ) ENGINE = MergeTree()
 ORDER BY timestamp;

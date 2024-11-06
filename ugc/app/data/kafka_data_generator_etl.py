@@ -1,12 +1,13 @@
-from decimal import Decimal
 import json
 import os
 import random
+from decimal import Decimal
+from enum import Enum
+
 from faker import Faker
 from kafka import KafkaProducer
-from enum import Enum
 from ugc.app.core.config import ugc_settings
-from ugc.app.data.utils import timer_decorator
+from ugc.app.data.utils_etl import timer_decorator
 
 
 class KafkaTopics(Enum):
@@ -42,6 +43,7 @@ def convert_to_serializable(obj):
 def generate_fake_map(num_entries=5):
     return {fake.word(): fake.word() for _ in range(num_entries)}
 
+
 def generate_event_data(event_type):
     """
     Generate a fake data record for a specific event type.
@@ -54,47 +56,47 @@ def generate_event_data(event_type):
     if event_type == KafkaTopics.QUALITY_CHANGE:
         base_data.update(
             {
-                'video_id': fake.uuid4(),
+                "video_id": fake.uuid4(),
                 "old_quality": fake.random_element(
                     elements=("240p", "360p", "480p", "720p", "1080p")
                 ),
                 "new_quality": fake.random_element(
                     elements=("240p", "360p", "480p", "720p", "1080p")
                 ),
-                "timestamp":  fake.date_time_this_year().isoformat(),
+                "timestamp": fake.date_time_this_year().isoformat(),
             },
         )
     elif event_type == KafkaTopics.VIDEO_COMPLETED:
         base_data.update(
             {
-                'video_id': fake.uuid4(),
+                "video_id": fake.uuid4(),
                 "user_id": fake.uuid4(),
-                "timestamp":  fake.date_time_this_year().isoformat(),
+                "timestamp": fake.date_time_this_year().isoformat(),
             }
         )
     elif event_type == KafkaTopics.SEARCH_FILTER:
         base_data.update(
             {
                 "filters": generate_fake_map(),
-                "timestamp":  fake.date_time_this_year().isoformat(),
+                "timestamp": fake.date_time_this_year().isoformat(),
             }
         )
     elif event_type == KafkaTopics.PAGE_TIME_SPEND:
         base_data.update(
             {
-                "page_url": fake.url(),
-                "entry_time":  fake.date_time_this_year().isoformat(),
-                "exit_time":  fake.date_time_this_year().isoformat(),
+                "page_name": fake.url(),
+                "entry_time": fake.date_time_this_year().isoformat(),
+                "exit_time": fake.date_time_this_year().isoformat(),
             }
         )
     elif event_type == KafkaTopics.USER_PAGE_CLICK:
         base_data.update(
             {
                 "session_id": fake.uuid4(),
-                "timestamp":  fake.date_time_this_year().isoformat(),
+                "timestamp": fake.date_time_this_year().isoformat(),
                 "page_name": fake.url(),
                 "element_id": fake.random_int(min=60, max=7200),
-                "elemeny_type": fake.word(),
+                "element_type": fake.word(),
             }
         )
     else:
