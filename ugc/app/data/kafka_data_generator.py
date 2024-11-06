@@ -1,6 +1,5 @@
 from decimal import Decimal
 import json
-import os
 import random
 from faker import Faker
 from kafka import KafkaProducer
@@ -69,7 +68,8 @@ def generate_data_batch(batch_size=BATCH_SIZE):
         for _ in range(batch_size):
             event_type = random.choice(list(KafkaTopics))
             record = generate_event_data(event_type)
-            batch.append((event_type.value, convert_to_serializable(record)))  # Ensure record is serializable
+            batch.append((event_type.value, convert_to_serializable(record)))
+        
         yield batch
 
 def send_data_to_kafka(batch):
@@ -94,75 +94,3 @@ def generate_and_send_data(num_batches, batch_size=BATCH_SIZE):
 if __name__ == "__main__":
     num_batches_to_send = 10000
     generate_and_send_data(num_batches=num_batches_to_send)
-
-
-
-# import json
-# import os
-# import asyncio
-# from faker import Faker
-# from aiokafka import AIOKafkaProducer
-
-# # Configure constants
-# TOPIC_NAME = "topic_name"
-# BATCH_SIZE = 1000
-# TOTAL_RECORDS = 10_000_000
-# NUM_WORKERS = 8
-
-# fake = Faker()
-
-# async def generate_data_batch(batch_size=BATCH_SIZE):
-#     """
-#     Asynchronously generate a batch of fake data records.
-#     """
-#     return [
-#         {
-#             "user_id": fake.uuid4(),
-#             "event_type": fake.random_element(elements=("play", "pause", "stop", "like")),
-#             "timestamp": fake.date_time_this_year().isoformat(),
-#             "metadata": {
-#                 "ip_address": fake.ipv4(),
-#                 "device": fake.user_agent(),
-#                 "location": {
-#                     "latitude": fake.latitude(),
-#                     "longitude": fake.longitude()
-#                 }
-#             }
-#         }
-#         for _ in range(batch_size)
-#     ]
-
-# async def send_data_to_kafka(producer, batch, topic=TOPIC_NAME):
-#     """
-#     Sends a batch of records to Kafka asynchronously.
-#     """
-#     for record in batch:
-#         await producer.send_and_wait(topic, json.dumps(record).encode("utf-8"))
-
-# async def generate_and_send_parallel(total_records=TOTAL_RECORDS, batch_size=BATCH_SIZE, num_workers=NUM_WORKERS):
-#     """
-#     Generates and sends data to Kafka in parallel using asyncio.
-#     """
-#     producer = AIOKafkaProducer(
-#         bootstrap_servers=os.getenv("KAFKA_BOOTSTRAP_SERVERS", "localhost:9092")
-#     )
-    
-#     await producer.start()
-#     try:
-#         total_batches = total_records // batch_size
-        
-#         for batch_num in range(0, total_batches, num_workers):
-#             tasks = [
-#                 asyncio.create_task(
-#                     send_data_to_kafka(producer, await generate_data_batch(batch_size))
-#                 )
-#                 for _ in range(min(num_workers, total_batches - batch_num))
-#             ]
-            
-#             await asyncio.gather(*tasks)
-#             print(f"Completed {batch_num + len(tasks)}/{total_batches} batches")
-#     finally:
-#         await producer.stop()
-
-# if __name__ == "__main__":
-#     asyncio.run(generate_and_send_parallel())

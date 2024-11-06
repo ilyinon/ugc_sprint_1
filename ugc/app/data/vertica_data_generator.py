@@ -2,9 +2,8 @@ import random
 from datetime import datetime
 from faker import Faker
 import vertica_python
-import time
-from functools import wraps
 from multiprocessing import Pool
+from data.utils import timer_decorator
 
 fake = Faker()
 
@@ -19,17 +18,6 @@ conn_info = {
 
 BATCH_SIZE = 1000
 NUM_WORKERS = 4
-
-def timer_decorator(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        start_time = time.time()
-        result = func(*args, **kwargs)
-        end_time = time.time()
-        execution_time = end_time - start_time
-        print(f"Execution time of {func.__name__}: {execution_time:.6f} seconds")
-        return result
-    return wrapper
 
 def generate_aggregated_data():
     event_date = datetime.now().date()
