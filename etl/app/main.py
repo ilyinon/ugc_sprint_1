@@ -101,10 +101,10 @@ def consume_messages(topic: str, model: BaseModel):
 
 if __name__ == "__main__":
     topics = {
-        # KafkaTopics.PAGE_TIME_SPEND.value: PageTimeSpend,
-        # KafkaTopics.QUALITY_CHANGE.value: QualityChangeEvent,
-        # KafkaTopics.SEARCH_FILTER.value: SearchFilterEvent,
-        # KafkaTopics.USER_PAGE_CLICK.value: UserPageClick,
+        KafkaTopics.PAGE_TIME_SPEND.value: PageTimeSpend,
+        KafkaTopics.QUALITY_CHANGE.value: QualityChangeEvent,
+        KafkaTopics.SEARCH_FILTER.value: SearchFilterEvent,
+        KafkaTopics.USER_PAGE_CLICK.value: UserPageClick,
         KafkaTopics.VIDEO_COMPLETED.value: VideoCompletedEvent,
     }
 
