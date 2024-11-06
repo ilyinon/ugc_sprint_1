@@ -8,7 +8,14 @@ from kafka import KafkaProducer
 
 from core.config import ugc_settings
 from core.logger import logger
-from schemas.base import (
+from schemas.kafka import (
+    KafkaPageTimeSpend,
+    KafkaQualityChangeEvent,
+    KafkaSearchFilterEvent,
+    KafkaUserPageClick,
+    KafkaVideoCompletedEvent,
+)
+from schemas.requests import (
     PageTimeSpend,
     QualityChangeEvent,
     SearchFilterEvent,
@@ -45,6 +52,15 @@ async def verify_jwt(credentials: HTTPAuthorizationCredentials = Security(securi
         raise HTTPException(status_code=401, detail="JWT token expired")
 
 
+event_types = {
+    "quality_change": KafkaQualityChangeEvent,
+    "video_completed": KafkaVideoCompletedEvent,
+    "search_filter": KafkaSearchFilterEvent,
+    "page_time_spend": KafkaPageTimeSpend,
+    "user_page_click": KafkaUserPageClick,
+}
+
+
 @router.post("/track_event", response_model=None, summary="Track events")
 async def track_event(
     event: (
@@ -67,13 +83,16 @@ async def track_event(
         logger.error(f"Wrong kafka topic {event.event_type}")
         raise HTTPException(status_code=500, detail="Error tracking event")
     try:
-        event_to_save = event
-        event_to_save.user_id = payload["user_id"]
 
-        logger.debug(f"event: {event_to_save}")
-        producer.send(kafka_topic, event_to_save.model_dump(mode="json"))
+        event_to_save = event.dict()
+        event_to_save["user_id"] = payload["user_id"]
+
+        event_type = event_to_save["event_type"]
+        event_to_kafa = event_types.get(event_type, None)(**event_to_save)
+
+        producer.send(kafka_topic, event_to_kafa.model_dump(mode="json"))
         producer.flush()
 
     except Exception as e:
-        logger.error("Event didn't track successfully")
+        logger.error(f"Event didn't track successfully, {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error tracking event: {str(e)}")

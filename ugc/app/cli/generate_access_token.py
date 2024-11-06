@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta, timezone
-from uuid import UUID, uuid4
+from uuid import uuid4
 
 import jwt as jwt_auth
 
@@ -7,7 +7,7 @@ from core.config import ugc_settings
 from core.logger import logger
 
 user_data = {
-    "user_id": "3fa85f64-0000-1111-2222-2c963f66afa6",
+    "user_id": str(uuid4()),
     "email": "user@ma.il",
     "roles": "user",
 }
@@ -15,7 +15,7 @@ user_data = {
 
 def create_token(user_data):
 
-    expires_time = datetime.now(tz=timezone.utc) + timedelta(seconds=86400)
+    expires_time = datetime.now(tz=timezone.utc) + timedelta(seconds=86400 * 30)
     payload = {
         "user_id": user_data["user_id"],
         "email": user_data["email"],
@@ -33,4 +33,5 @@ def create_token(user_data):
 
 
 if __name__ == "__main__":
+
     print(create_token(user_data))

@@ -9,4 +9,5 @@ done
 
 
 echo "Etl запущен."
+
 python main.py
