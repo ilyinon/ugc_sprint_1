@@ -1,6 +1,6 @@
-CREATE DATABASE IF NOT EXISTS user_actions;
+CREATE DATABASE IF NOT EXISTS actions_users;
 
-USE user_actions;
+USE actions_users;
 
 CREATE TABLE IF NOT EXISTS quality_change (
     event_type String,
@@ -46,6 +46,6 @@ CREATE TABLE IF NOT EXISTS user_interaction(
     timestamp DateTime NOT NULL,
     page_name String,
     element_id Int64,
-    elemeny_type String
+    element_type String
 ) ENGINE = MergeTree()
 ORDER BY timestamp;

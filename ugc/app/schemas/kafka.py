@@ -1,7 +1,13 @@
-from datetime import datetime
-
 import orjson
-from pydantic import UUID4, BaseModel, Field
+from pydantic import UUID4, BaseModel
+
+from .requests import (
+    PageTimeSpend,
+    QualityChangeEvent,
+    SearchFilterEvent,
+    UserPageClick,
+    VideoCompletedEvent,
+)
 
 
 def orjson_dumps(v, *, default):
@@ -14,42 +20,25 @@ class OrjsonBaseModel(BaseModel):
         json_dumps = orjson_dumps
 
 
-class KafkaQualityChangeEvent(OrjsonBaseModel):
-    event_type: str = "quality_change"
+class UserIdMixin(OrjsonBaseModel):
     user_id: UUID4
-    video_id: UUID4
-    old_quality: str
-    new_quality: str
-    timestamp: datetime
 
 
-class KafkaVideoCompletedEvent(OrjsonBaseModel):
-    event_type: str = "video_completed"
-    user_id: UUID4
-    video_id: UUID4
-    timestamp: datetime
+class KafkaQualityChangeEvent(QualityChangeEvent, UserIdMixin):
+    pass
 
 
-class KafkaSearchFilterEvent(OrjsonBaseModel):
-    event_type: str = "search_filter"
-    user_id: UUID4
-    filters: dict  # Словарь с фильтрами, например {"genre": "action", "rating": "9"}
-    timestamp: datetime
+class KafkaVideoCompletedEvent(VideoCompletedEvent, UserIdMixin):
+    pass
 
 
-class KafkaPageTimeSpend(OrjsonBaseModel):
-    event_type: str = "page_time_spend"
-    user_id: UUID4
-    page_name: str
-    entry_time: datetime
-    exit_time: datetime = Field(default=None)
+class KafkaSearchFilterEvent(SearchFilterEvent, UserIdMixin):
+    pass
 
 
-class KafkaUserPageClick(OrjsonBaseModel):
-    event_type: str = "user_page_click"
-    user_id: UUID4
-    session_id: str = Field(default=None)
-    timestamp: datetime
-    page_name: str
-    element_id: int
-    element_type: str
+class KafkaPageTimeSpend(PageTimeSpend, UserIdMixin):
+    pass
+
+
+class KafkaUserPageClick(UserPageClick, UserIdMixin):
+    pass

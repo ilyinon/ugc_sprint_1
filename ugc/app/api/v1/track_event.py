@@ -4,10 +4,10 @@ import jwt
 from fastapi import APIRouter, Depends, Security
 from fastapi.exceptions import HTTPException
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from kafka import KafkaProducer
 
 from core.config import ugc_settings
 from core.logger import logger
-from kafka import KafkaProducer
 from schemas.kafka import (
     KafkaPageTimeSpend,
     KafkaQualityChangeEvent,
@@ -15,7 +15,7 @@ from schemas.kafka import (
     KafkaUserPageClick,
     KafkaVideoCompletedEvent,
 )
-from schemas.request import (
+from schemas.requests import (
     PageTimeSpend,
     QualityChangeEvent,
     SearchFilterEvent,
@@ -54,10 +54,10 @@ async def verify_jwt(credentials: HTTPAuthorizationCredentials = Security(securi
 
 event_types = {
     "quality_change": KafkaQualityChangeEvent,
-    "video_completed": VideoCompletedEvent,
-    "search_filter": SearchFilterEvent,
-    "page_time_spend": PageTimeSpend,
-    "user_page_click": UserPageClick,
+    "video_completed": KafkaVideoCompletedEvent,
+    "search_filter": KafkaSearchFilterEvent,
+    "page_time_spend": KafkaPageTimeSpend,
+    "user_page_click": KafkaUserPageClick,
 }
 
 

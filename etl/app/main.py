@@ -1,16 +1,15 @@
-import datetime
 import json
 import time
-from enum import Enum
+from datetime import datetime
 from multiprocessing import Process
 
 import backoff
 import clickhouse_connect
-from config import etl_settings
+from config import KafkaTopics, etl_settings
+from kafka import KafkaConsumer
 from logger import logger
 from pydantic import BaseModel, ValidationError
 
-from kafka import KafkaConsumer
 from schemas.base import (
     PageTimeSpend,
     QualityChangeEvent,
@@ -20,19 +19,19 @@ from schemas.base import (
 )
 
 logger.info(f"kafka_bootstrap: {etl_settings.kafka_bootsrap}")
-KAFKA_BROKERS = etl_settings.kafka_bootsrap
-KAFKA_TOPIC = "quality_change"
 
-# Настройка подключения к ClickHouse
+KAFKA_BROKERS = etl_settings.kafka_bootsrap
+
 CLICKHOUSE_HOST = etl_settings.ch_host
 CLICKHOUSE_PORT = etl_settings.ch_port
 CLICKHOUSE_DATABASE = etl_settings.ch_database
 CLICKHOUSE_USER = etl_settings.ch_user
 CLICKHOUSE_PASSWORD = etl_settings.ch_password
 
-
 poll_timeout = 10000  # in milliseconds
-batch_size = 100
+batch_size = 10
+TIME_SLEEP = 0.1
+
 
 clickhouse_client = clickhouse_connect.get_client(
     host=CLICKHOUSE_HOST,
@@ -41,24 +40,6 @@ clickhouse_client = clickhouse_connect.get_client(
     user=CLICKHOUSE_USER,
     password=CLICKHOUSE_PASSWORD,
 )
-
-
-consumer = KafkaConsumer(
-    KAFKA_TOPIC,
-    bootstrap_servers=KAFKA_BROKERS,
-    auto_offset_reset="earliest",
-    value_deserializer=lambda m: json.loads(m.decode("utf-8")),
-    group_id="lets-upload-it2",
-)
-
-
-class KafkaTopics(Enum):
-    TRACK_EVENTS = "track_events"
-    QUALITY_CHANGE = "quality_change"
-    VIDEO_COMPLETED = "video_completed"
-    SEARCH_FILTER = "search_filter"
-    PAGE_TIME_SPEND = "page_time_spend"
-    USER_PAGE_CLICK = "user_interaction"
 
 
 def insert_data_to_clickhouse(name_table, data: list):
@@ -74,6 +55,11 @@ def insert_data_to_clickhouse(name_table, data: list):
         logger.info("No data to insert.")
 
 
+@backoff.on_exception(
+    backoff.expo,
+    Exception,
+    max_tries=3,
+)
 def consume_messages(topic: str, model: BaseModel):
     consumer = KafkaConsumer(
         topic,
@@ -107,10 +93,10 @@ def consume_messages(topic: str, model: BaseModel):
                     ]
                     batch.append(row_data)
                 except ValidationError as e:
-                    logger.info(f"Validation error in topic {topic}: {e}")
+                    logger.error(f"Validation error in topic {topic}: {e}")
             if batch:
                 insert_data_to_clickhouse(topic, batch)
-            time.sleep(0.3)
+                time.sleep(TIME_SLEEP)
 
 
 if __name__ == "__main__":
