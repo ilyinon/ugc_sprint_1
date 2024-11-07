@@ -1,12 +1,12 @@
 import vertica_python
 
 conn_info = {
-    'host': '127.0.0.1',
-    'port': 5433,
-    'user': 'dbadmin',
-    'password': '',
-    'database': 'docker',
-    'autocommit': True,
+    "host": "localhost",
+    "port": 5444,
+    "user": "newdbadmin",
+    "password": "vertica",
+    "database": "docker",
+    "autocommit": True,
 }
 
 truncate_table_query = "TRUNCATE TABLE user_activity_analytics"

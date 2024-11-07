@@ -1,0 +1,13 @@
+services:
+  vertica:
+    image: vertica/vertica-ce:24.1.0-0
+    ports:
+      - "5433:5433"
+    environment:
+      - APP_DB_USER="newdbadmin"
+      - APP_DB_PASSWORD="vertica"
+    volumes:
+      - vertica-data2:/data
+
+volumes:
+  vertica-data2:

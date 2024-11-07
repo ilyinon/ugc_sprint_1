@@ -1,12 +1,13 @@
-import vertica_python
 import time
+
 import pandas as pd
+import vertica_python
 
 conn_info = {
-    "host": "127.0.0.1",
-    "port": 5433,
-    "user": "dbadmin",
-    "password": "",
+    "host": "localhost",
+    "port": 5444,
+    "user": "newdbadmin",
+    "password": "vertica",
     "database": "docker",
     "autocommit": True,
 }
@@ -38,7 +39,7 @@ def daily_event_count():
 
 def hourly_aggregation_by_event_type():
     return """
-        SELECT event_date, event_hour, event_type, 
+        SELECT event_date, event_hour, event_type,
                SUM(total_events) AS total_events, AVG(avg_duration) AS average_duration
         FROM user_activity_analytics GROUP BY event_date, event_hour, event_type
         ORDER BY event_date, event_hour;
@@ -47,7 +48,7 @@ def hourly_aggregation_by_event_type():
 
 def most_frequent_page_urls():
     return """
-        SELECT page_url, COUNT(*) AS visit_count 
+        SELECT page_url, COUNT(*) AS visit_count
         FROM user_activity_analytics WHERE event_type = 'user_page_click'
         GROUP BY page_url ORDER BY visit_count DESC LIMIT 10;
     """
@@ -55,7 +56,7 @@ def most_frequent_page_urls():
 
 def percentage_distribution_of_event_types():
     return """
-        SELECT event_type, 
+        SELECT event_type,
                COUNT(*) * 100.0 / total.total_event_count AS percentage
         FROM user_activity_analytics
         CROSS JOIN (SELECT COUNT(*) AS total_event_count FROM user_activity_analytics) AS total
@@ -65,8 +66,8 @@ def percentage_distribution_of_event_types():
 
 def rolling_average_of_clicks_over_time():
     return """
-        SELECT event_date, 
-               AVG(total_clicks) OVER (ORDER BY event_date ROWS BETWEEN 6 PRECEDING AND CURRENT ROW) 
+        SELECT event_date,
+               AVG(total_clicks) OVER (ORDER BY event_date ROWS BETWEEN 6 PRECEDING AND CURRENT ROW)
                AS rolling_avg_clicks FROM user_activity_analytics ORDER BY event_date;
     """
 

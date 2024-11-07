@@ -34,9 +34,10 @@ clickhouse: clickhouse_dir
 clickhouse_dir:
 	@:
 
-vertica:
-	docker run -d -p 5433:5433 jbfavre/vertica:latest
+vertica: vertica_dir
+	docker-compose -f docker-compose.yml -f vertica/docker-compose.yml up -d --build
 
+vertica_dir:
 
 all:
 	$(MAKE) infra

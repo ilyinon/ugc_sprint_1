@@ -1,23 +1,25 @@
 import random
 from datetime import datetime
-from faker import Faker
-import vertica_python
 from multiprocessing import Pool
+
+import vertica_python
 from data.utils import timer_decorator
+from faker import Faker
 
 fake = Faker()
 
 conn_info = {
-    'host': '127.0.0.1',
-    'port': 5433,
-    'user': 'dbadmin',
-    'password': '',
-    'database': 'docker',
-    'autocommit': True,
+    "host": "localhost",
+    "port": 5444,
+    "user": "newdbadmin",
+    "password": "vertica",
+    "database": "docker",
+    "autocommit": True,
 }
 
 BATCH_SIZE = 1000
 NUM_WORKERS = 4
+
 
 def generate_aggregated_data():
     event_date = datetime.now().date()
@@ -64,22 +66,28 @@ def generate_aggregated_data():
         total_clicks,
     )
 
+
 def insert_data_batch(batch_size=BATCH_SIZE):
     batch = [generate_aggregated_data() for _ in range(batch_size)]
-    
+
     with vertica_python.connect(**conn_info) as connection:
         cursor = connection.cursor()
-        cursor.executemany("""
+        cursor.executemany(
+            """
             INSERT INTO user_activity_analytics
             (event_date, event_hour, event_type, page_url, total_events, avg_duration, total_clicks)
             VALUES (%s, %s, %s, %s, %s, %s, %s);
-        """, batch)
+        """,
+            batch,
+        )
         print(f"Inserted {batch_size} records into Vertica.")
+
 
 @timer_decorator
 def parallel_generate_and_insert_data(total_batches):
     with Pool(processes=NUM_WORKERS) as pool:
         pool.map(insert_data_batch, [BATCH_SIZE] * total_batches)
+
 
 if __name__ == "__main__":
     num_batches = 10000
