@@ -1,0 +1,11 @@
+Query Name,Execution Time (s),Result Rows,Status,Error
+Select All Data,375.5589699745178,10000000,Success,
+Filter by Event Type,44.05634784698486,1667123,Success,
+Date Range Query,0.05747652053833008,0,Success,
+Count Events by Type,0.4737122058868408,6,Success,
+Average Duration by Event Type,0.521265983581543,6,Success,
+Daily Event Count,1.1187140941619873,1,Success,
+Hourly Aggregation by Event Type,0.3801264762878418,144,Success,
+Most Frequent Page URLs,1.0803649425506592,10,Success,
+Percentage Distribution of Event Types,1.2904038429260254,6,Success,
+Rolling Average of Clicks Over Time,181.69338703155518,10000000,Success,
