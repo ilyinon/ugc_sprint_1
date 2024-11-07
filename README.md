@@ -5,7 +5,7 @@
 
 [docs/requirements/functional.md](docs/requirements/functional.md) - функциональные требования
 
-[docs/requirements/non-functional.md](docs/requirements/non-functional.md) - нефункциональные требования
+[docs/requirements/non-functinal.md](docs/requirements/non-functinal.md) - нефункциональные требования
 
 [docs/research/report.md](docs/research/report.md) - результат исследования
 
