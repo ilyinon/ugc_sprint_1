@@ -126,7 +126,7 @@ def generate_data_batch(batch_size=BATCH_SIZE):
             record = generate_event_data(event_type)
             batch.append(
                 (event_type.value, convert_to_serializable(record))
-            )  # Ensure record is serializable
+            )
         yield batch
 
 

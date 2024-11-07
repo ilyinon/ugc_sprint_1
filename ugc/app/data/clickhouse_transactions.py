@@ -16,7 +16,7 @@ def filter_by_event_type():
 
 
 def date_range_query():
-    return "SELECT * FROM user_activity_analytics WHERE event_date BETWEEN '2023-01-01' AND '2023-01-31';"
+    return "SELECT * FROM user_activity_analytics WHERE event_date BETWEEN '2024-01-01' AND '2024-01-31';"
 
 
 def count_events_by_type():
