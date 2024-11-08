@@ -29,7 +29,7 @@ CLICKHOUSE_USER = etl_settings.ch_user
 CLICKHOUSE_PASSWORD = etl_settings.ch_password
 
 poll_timeout = 10000  # in milliseconds
-batch_size = 10
+batch_size = 1000  # at least 1000 , https://clickhouse.com/docs/ru/introduction/performance#proizvoditelnost-pri-vstavke-dannykh
 TIME_SLEEP = 0.1
 
 
@@ -67,6 +67,7 @@ def consume_messages(topic: str, model: BaseModel):
         auto_offset_reset="earliest",
         group_id=f"group_{topic}",
         value_deserializer=lambda m: json.loads(m.decode("utf-8")),
+        enable_auto_commit=False,
     )
     logger.info(f"Started consumer for topic: {topic}")
 
@@ -97,6 +98,7 @@ def consume_messages(topic: str, model: BaseModel):
             if batch:
                 insert_data_to_clickhouse(topic, batch)
                 time.sleep(TIME_SLEEP)
+                consumer.commit()
 
 
 if __name__ == "__main__":
