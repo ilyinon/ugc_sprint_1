@@ -95,4 +95,4 @@ async def track_event(
 
     except Exception as e:
         logger.error(f"Event didn't track successfully, {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Error tracking event: {str(e)}")
+        raise HTTPException(status_code=500, detail="Error tracking event")
